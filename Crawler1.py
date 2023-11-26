@@ -33,7 +33,7 @@ def crawl_layers(base_url, depth=2):
         for url in layers[i - 1]:
             new_links = get_unique_links(url, visited)
             layers[i].update(new_links)
-            visited.update(new_links)  # Add newly discovered links to visited
+            visited.update(new_links)  
             print(f"Found {len(new_links)} new links in layer {i}.")
             for link in new_links:
                 print(link)  
