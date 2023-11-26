@@ -12,7 +12,7 @@ def get_unique_links(url, already_visited):
         links = set()
         for link in soup.find_all('a', href=True):
             full_link = urljoin(url, link['href'])
-            # Add the link if not already visited
+            
             if full_link not in already_visited:
                 links.add(full_link)
         return links
@@ -23,9 +23,9 @@ def get_unique_links(url, already_visited):
 
 def crawl_layers(base_url, depth=2):
     """ Crawl through the website layers. """
-    visited = set()  # Tracks visited URLs
+    visited = set()  
     layers = {0: {base_url}}
-    visited.add(base_url)  # Mark the base URL as visited
+    visited.add(base_url)  
 
     for i in range(1, depth + 1):
         layers[i] = set()
@@ -36,15 +36,15 @@ def crawl_layers(base_url, depth=2):
             visited.update(new_links)  # Add newly discovered links to visited
             print(f"Found {len(new_links)} new links in layer {i}.")
             for link in new_links:
-                print(link)  # Print each new link found
+                print(link)  
 
     return layers
 
 
-# Example usage
+
 base_url = 'https://www.bysavi.com/'
 layers = crawl_layers(base_url)
 
-# Display the total number of links in each layer
+
 for depth, links in layers.items():
     print(f"Layer {depth} has {len(links)} links.")
