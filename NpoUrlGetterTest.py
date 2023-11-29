@@ -183,9 +183,18 @@ def load_data(file_path):
     ## Read the .csv file into a pandas DataFrame
     NPO_df = pd.read_csv(file_path)
 
+    
+    npo_list = NPO_df['NAME'].to_list()
+    npo_second_name = NPO_df['SORT_NAME'].to_list()
+
+    print(f" ___ got npo list {npo_list}" )
+    print(f" ___ got npo back up names list {npo_second_name}" )
+    # small = npo_list[:10]
+    # mid = npo_list[:50]
+
     ## Display the DataFrame
     print(NPO_df.head())
-    return NPO_df
+    return NPO_df, npo_list, npo_second_name
 
 
 
@@ -195,27 +204,29 @@ def main(args):
     print("Starting MAIN ")
 
     ## Specify the path to the csv file
-    NPO_whitelist_path = "NPO_whitelist_2names.csv"
+    # NPO_whitelist_path = "NPO_whitelist_2names.csv"
+    NPO_whitelist_path = "whitelist_NPO_cityWorcester.csv"
 
-    npo_df = load_data(NPO_whitelist_path)
+    npo_df, npo_list, npo_list2 = load_data(NPO_whitelist_path)
 
-    npo_list = npo_df['NAME'].to_list()
-    print(f" ___ got npo list {npo_list}" )
-    small = npo_list[:10]
-    mid = npo_list[:50]
-
-
+    ## start the Automated retreiving 
     autoChrome = AutomateChromeURLSearch()
 
     ## initialize chromedriver and search bar element
     autoChrome.start_driver()
 
-
-    # arr = ['United Way', 'United way mass', 'cws', 'java', 'wpi goat cheese', 'wpi']
-
-    print(f" FINISHED getting urls. Go the top urls: \n{autoChrome.iterate_for_list(mid)}." )
+    urls_list = autoChrome.iterate_for_list(npo_list)
+    print(f" FINISHED getting urls. Go the top 25 urls: \n{urls_list[:25]}." )
 
     ## once all urls are found and validated, add to df 
+
+    out_df = npo_df.copy()
+    out_df["domain_url"] = urls_list
+    print(f"checking out df : {out_df}")
+
+    out_file = "profiles_url_cityWorcester.csv"
+    out_df.to_csv(out_file)
+    print("\n Done. ")
 
 
 
