@@ -1,50 +1,56 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import re
+import csv
 
+def tokenize(text):
+    """ Tokenize the given text into words. """
+    tokens = re.findall(r'\b\w+\b', text.lower())
+    return set(tokens)
 
-def get_unique_links(url, already_visited):
-    """ Get unique links from a given webpage. """
+def contains_keyword(tokens, keywords):
+    """ Check if any of the keywords are in the tokens. """
+    return any(keyword in tokens for keyword in keywords)
+
+def get_partners_links(url, keywords):
+    """ Get links related to specified keywords from the given webpage. """
+    links = set()
     try:
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
-        links = set()
+
         for link in soup.find_all('a', href=True):
+            link_text = link.get_text().strip().lower()
+            tokens = tokenize(link_text)
             full_link = urljoin(url, link['href'])
-            
-            if full_link not in already_visited:
+            if contains_keyword(tokens, keywords):
                 links.add(full_link)
-        return links
     except requests.RequestException as e:
-        print(f"Error occurred while crawling {url}: {e}")
-        return set()
+        print(f"Error occurred while fetching {url}: {e}")
+
+    return links
+
+def write_links_to_csv(base_url, links):
+    """ Write the links to a CSV file. """
+    with open('links.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Base URL', 'Retrieved Link'])
+        for link in links:
+            writer.writerow([base_url, link])
 
 
-def crawl_layers(base_url, depth=2):
-    """ Crawl through the website layers. """
-    visited = set()  
-    layers = {0: {base_url}}
-    visited.add(base_url)  
+base_url = 'https://www.unitedway.org/#'
+keywords = [
+    'partners', 'associates', 'collaborators', 'colleagues', 'affiliates', 'allies',
+    'about', 'pertaining', 'respect', 'relating',
+    'aboutus', 'team', 'company', 'partner', 'teammate', 'collaborator', 'associate', 'companion',
+    'contributors', 'supporters', 'donors', 'benefactors', 'sponsors', 'backers'
+]
+partners_links = get_partners_links(base_url, keywords)
+write_links_to_csv(base_url, partners_links)
 
-    for i in range(1, depth + 1):
-        layers[i] = set()
-        print(f"Crawling layer {i}...")
-        for url in layers[i - 1]:
-            new_links = get_unique_links(url, visited)
-            layers[i].update(new_links)
-            visited.update(new_links)  
-            print(f"Found {len(new_links)} new links in layer {i}.")
-            for link in new_links:
-                print(link)  
-
-    return layers
-
-
-
-base_url = 'https://www.bysavi.com/'
-layers = crawl_layers(base_url)
-
-
-for depth, links in layers.items():
-    print(f"Layer {depth} has {len(links)} links.")
+print(f"Links related to {keywords} found on the page:")
+for link in partners_links:
+    print(link)
