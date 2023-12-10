@@ -41,7 +41,7 @@ def write_links_to_csv(base_url, links):
             writer.writerow([base_url, link])
 
 
-base_url = 'https://www.unitedway.org/#'
+base_url = 'https://www.unitedway.org/'
 keywords = [
     'partners', 'associates', 'collaborators', 'colleagues', 'affiliates', 'allies',
     'about', 'pertaining', 'respect', 'relating',
