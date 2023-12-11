@@ -33,12 +33,12 @@ def get_partners_links(url, keywords):
     return links
 
 def write_links_to_csv(base_url, links):
-    """ Write the links to a CSV file. """
+    """ Write the base URL and retrieved links to a CSV file with each link. """
     with open('links.csv', 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(['Base URL', 'Retrieved Link'])
-        for link in links:
-            writer.writerow([base_url, link])
+        # Start with the base URL and then add all retrieved links
+        row = [base_url] + list(links)
+        writer.writerow(row)
 
 
 base_url = 'https://www.unitedway.org/'
