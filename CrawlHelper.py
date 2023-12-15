@@ -13,7 +13,7 @@ import queue
     
     '''
 
-
+## Data storage and crawling queue
 class CrawlerData: 
     def __init__(self, seed):
         self.seed = seed
@@ -30,6 +30,7 @@ class CrawlerData:
         return True
     
     def add_page(self, page):
+        ## page is object WebPage
         self.crawled_data[page.url] = page
         self.crawl_count += 1
         return self.crawl_count
@@ -45,12 +46,11 @@ class CrawlerData:
     
     '''
 
-## Struct for webpage 
+## 'Struct' for a crawled webpage 
 class WebPage:
-    # def __init__(self, url, link_type, base_url, relationship_type):
     def __init__(self, url):
         self.url = url
-        self.whitelinks = set
+        self.to_npo_links = set
         self.links = dict
         self.out_types = { ".com": 0, 
          ".edu": 0, 
@@ -65,7 +65,6 @@ class WebPage:
          "news": 0, 
          "other": 0
          }
-        # self.relationship_type = relationship_type
 
     ''' increment dict counter for link domain extension type '''
     def link_type(self, link_type):
