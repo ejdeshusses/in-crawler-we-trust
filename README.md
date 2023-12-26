@@ -6,4 +6,4 @@ Updated 11/28/23:
 
 > NpoUrlGetterTest.py - uses Selenium to automate searching Google and getting urls for each of the whitelisted NPOs.
 
-> url_getter.ipynb - [ rename to NPO name getter] script loads  data from the NPO_whitelist_2names.csv file and attempts some parsing. under developed. use may have been outlived. 
+> NPO name getter.ipynb - script loads  data from the NPO_whitelist_2names.csv file and attempts some parsing. under developed. use may have been outlived. 
